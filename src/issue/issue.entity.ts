@@ -42,7 +42,7 @@ class Issue extends BaseEntity {
   @Column('varchar')
   priority: IssuePriority;
 
-  @Column('double precision')
+  @Column('integer')
   order: number;
 
   @Column('text', { nullable: true })
@@ -61,12 +61,18 @@ class Issue extends BaseEntity {
   @JoinColumn({ name: 'projectId' })
   project: Project;
 
+  @Column('integer')
+  projectId: number;
+
   @OneToMany(() => Comment, (comment) => comment.issue)
   comments: Comment[];
 
   @ManyToOne(() => User, (user) => user.issues)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @Column('integer')
+  userId: number;
 }
 
 export default Issue;

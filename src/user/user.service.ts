@@ -57,7 +57,7 @@ export class UserService {
     return true;
   }
 
-  private async getUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     const project = await this.userRepository.findOne({
       select: ['id', 'avatarUrl', 'email', 'createdAt', 'updatedAt', 'name'],
       where: { id },

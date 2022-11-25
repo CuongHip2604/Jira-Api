@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'auth/user.entity';
+import Issue from 'issue/issue.entity';
 import { Repository } from 'typeorm';
 import { UserProject } from 'user-project/user-project.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -18,9 +19,6 @@ export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private projectRepository: Repository<Project>,
-
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
 
     @InjectRepository(UserProject)
     private userProjectRepository: Repository<UserProject>,
@@ -162,7 +160,7 @@ export class ProjectService {
     return true;
   }
 
-  private async getProjectById(id: number): Promise<Project> {
+  async getProjectById(id: number): Promise<Project> {
     const project = await this.projectRepository.findOne({
       select: [
         'id',

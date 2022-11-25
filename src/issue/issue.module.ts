@@ -1,12 +1,21 @@
 import { Module } from '@nestjs/common';
-import { IssueService } from './issue.service';
-import { IssueController } from './issue.controller';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import Project from 'project/project.entity';
+import { ProjectModule } from 'project/project.module';
+import { UserModule } from 'user/user.module';
+import { IssueController } from './issue.controller';
 import Issue from './issue.entity';
+import { IssueService } from './issue.service';
 
 @Module({
   providers: [IssueService],
   controllers: [IssueController],
-  imports: [TypeOrmModule.forFeature([Issue])],
+  imports: [
+    TypeOrmModule.forFeature([Issue, Project]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    ProjectModule,
+    UserModule,
+  ],
 })
 export class IssueModule {}

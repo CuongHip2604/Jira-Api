@@ -12,5 +12,6 @@ import { UserService } from './user.service';
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
+  exports: [UserService],
 })
 export class UserModule {}
