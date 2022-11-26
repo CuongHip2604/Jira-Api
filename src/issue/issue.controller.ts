@@ -3,11 +3,11 @@ import {
   Controller,
   Get,
   Param,
-  Patch,
   Post,
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -15,15 +15,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'auth/get-user.decorator';
 import { User } from 'auth/user.entity';
+import { ResponseInterceptor } from 'interceptors/response.interceptor';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { FilterIssueDto } from './dto/filter-issue.dto';
+import { IssueDetailDto } from './dto/issue-detail.dto';
 import { UpdateIssueDto } from './dto/update-issue.dto';
-import { UpdateStatusAndOrderDto } from './dto/update-status-order.dto';
 import Issue from './issue.entity';
 import { IssueService } from './issue.service';
 
 @ApiTags('Issue')
 @ApiBearerAuth()
+@UseInterceptors(new ResponseInterceptor())
 @Controller('issue')
 export class IssueController {
   constructor(private issueService: IssueService) {}
@@ -37,7 +39,7 @@ export class IssueController {
 
   @Get('/:id')
   @UseGuards(AuthGuard())
-  getIssue(@Param('id') id: string): Promise<Issue> {
+  getIssue(@Param('id') id: string): Promise<IssueDetailDto> {
     return this.issueService.getIssue(Number(id));
   }
 
@@ -57,17 +59,7 @@ export class IssueController {
   updateIssue(
     @Body() updateIssueDto: UpdateIssueDto,
     @Param('id') id: string,
-  ): Promise<Issue> {
+  ): Promise<IssueDetailDto> {
     return this.issueService.updateIssue(updateIssueDto, Number(id));
-  }
-
-  @Patch('/:id/status')
-  @UseGuards(AuthGuard())
-  @UsePipes(ValidationPipe)
-  updateIssueStatus(
-    @Param('id') id: string,
-    @Body() body: UpdateStatusAndOrderDto,
-  ): Promise<Issue> {
-    return this.issueService.updateIssueStatus(body, Number(id));
   }
 }

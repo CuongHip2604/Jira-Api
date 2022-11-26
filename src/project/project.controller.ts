@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'auth/get-user.decorator';
 import { User } from 'auth/user.entity';
+import { ResponseInterceptor } from 'interceptors/response.interceptor';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { ProjectDetailDto } from './dto/project-detail.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -24,6 +26,7 @@ import { ProjectService } from './project.service';
 
 @ApiTags('Project')
 @ApiBearerAuth()
+@UseInterceptors(new ResponseInterceptor())
 @Controller('project')
 export class ProjectController {
   constructor(private projectService: ProjectService) {}

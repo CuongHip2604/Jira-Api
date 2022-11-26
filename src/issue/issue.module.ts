@@ -17,5 +17,6 @@ import { IssueService } from './issue.service';
     ProjectModule,
     UserModule,
   ],
+  exports: [IssueService],
 })
 export class IssueModule {}

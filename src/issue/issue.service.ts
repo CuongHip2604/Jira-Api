@@ -6,11 +6,10 @@ import { Repository } from 'typeorm';
 import { UserService } from 'user/user.service';
 import { CreateIssueDto } from './dto/create-issue.dto';
 import { FilterIssueDto } from './dto/filter-issue.dto';
+import { IssueDetailDto } from './dto/issue-detail.dto';
+import { UpdateIssueDto } from './dto/update-issue.dto';
 import { IssueStatus } from './enum';
 import Issue from './issue.entity';
-import { max } from 'lodash';
-import { UpdateIssueDto } from './dto/update-issue.dto';
-import { UpdateStatusAndOrderDto } from './dto/update-status-order.dto';
 
 @Injectable()
 export class IssueService {
@@ -36,16 +35,9 @@ export class IssueService {
     return await this.issueRepository.find();
   }
 
-  async getIssue(id: number): Promise<Issue> {
-    const issue = await this.issueRepository.findOne({
-      where: { id },
-    });
-
-    if (!issue) {
-      throw new NotFoundException('This issue is not found');
-    }
-
-    return issue;
+  async getIssue(id: number): Promise<IssueDetailDto> {
+    const issue = await this.getIssueById(id);
+    return new IssueDetailDto(issue);
   }
 
   async createIssue(
@@ -77,32 +69,17 @@ export class IssueService {
   async updateIssue(
     updateIssueDto: UpdateIssueDto,
     id: number,
-  ): Promise<Issue> {
-    const issue = await this.getIssue(id);
+  ): Promise<IssueDetailDto> {
+    const issue = await this.getIssueById(id);
 
-    const { description, priority, title, type, userId, status } =
-      updateIssueDto;
+    const { userId } = updateIssueDto;
 
-    issue.title !== title && (issue.title = title);
-    issue.description !== description && (issue.description = description);
-    issue.type !== type && (issue.type = type);
-    issue.priority !== priority && (issue.priority = priority);
-    issue.userId !== userId && (issue.userId = userId);
-    issue.status !== status && (issue.status = status);
-    return await this.issueRepository.save(issue);
-  }
+    if (userId) {
+      await this.userService.getUserById(userId);
+    }
 
-  async updateIssueStatus(
-    body: UpdateStatusAndOrderDto,
-    id: number,
-  ): Promise<Issue> {
-    const issue = await this.getIssue(id);
-
-    const { status } = body;
-
-    issue.status = status;
-
-    return await this.issueRepository.save(issue);
+    Object.assign(issue, updateIssueDto);
+    return new IssueDetailDto(await this.issueRepository.save(issue));
   }
 
   private async getIssuesByProjectId(projectId: number): Promise<Issue[]> {
@@ -122,10 +99,24 @@ export class IssueService {
   private async getOrder() {
     const issues = await this.issueRepository.find();
 
-    if (!issues.length) return 0;
-
     const orders = issues.map((issue) => issue.order);
 
-    return max(orders) + 1;
+    if (orders.length > 0) {
+      return Math.min(...orders) - 1;
+    }
+    return 1;
+  }
+
+  async getIssueById(id: number) {
+    const issue = await this.issueRepository.findOne({
+      where: { id },
+      relations: ['user', 'comments', 'comments.user'],
+    });
+
+    if (!issue) {
+      throw new NotFoundException('This issue is not found');
+    }
+
+    return issue;
   }
 }

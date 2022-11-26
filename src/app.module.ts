@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TasksModule } from './tasks/tasks.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from 'config/typeorm.config';
 import { IssueModule } from './issue/issue.module';
@@ -12,7 +11,6 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    TasksModule,
     TypeOrmModule.forRoot(typeOrmConfig),
     IssueModule,
     ProjectModule,

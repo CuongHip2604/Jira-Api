@@ -10,17 +10,10 @@ import {
 
 import Issue from 'issue/issue.entity';
 import { UserProject } from 'user-project/user-project.entity';
-import is from 'utils/validation';
 import { ProjectCategory, ProjectStatus } from './enum';
 
 @Entity()
 class Project extends BaseEntity {
-  static validations = {
-    name: [is.required(), is.maxLength(100)],
-    url: is.url(),
-    category: [is.required(), is.oneOf(Object.values(ProjectCategory))],
-  };
-
   @PrimaryGeneratedColumn()
   id: number;
 

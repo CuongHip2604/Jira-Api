@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'auth/user.entity';
-import Issue from 'issue/issue.entity';
 import { Repository } from 'typeorm';
 import { UserProject } from 'user-project/user-project.entity';
 import { CreateProjectDto } from './dto/create-project.dto';

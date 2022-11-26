@@ -13,20 +13,10 @@ import {
 import { User } from 'auth/user.entity';
 import Comment from 'comment/comment.entity';
 import Project from 'project/project.entity';
-import is from 'utils/validation';
 import { IssuePriority, IssueStatus, IssueType } from './enum';
 
 @Entity()
 class Issue extends BaseEntity {
-  static validations = {
-    title: [is.required(), is.maxLength(200)],
-    type: [is.required(), is.oneOf(Object.values(IssueType))],
-    status: [is.required(), is.oneOf(Object.values(IssueStatus))],
-    priority: [is.required(), is.oneOf(Object.values(IssuePriority))],
-    listPosition: is.required(),
-    reporterId: is.required(),
-  };
-
   @PrimaryGeneratedColumn()
   id: number;
 

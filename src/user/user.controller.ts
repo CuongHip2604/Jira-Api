@@ -1,14 +1,24 @@
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Put,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from 'auth/get-user.decorator';
 import { User } from 'auth/user.entity';
+import { ResponseInterceptor } from 'interceptors/response.interceptor';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDetailDto } from './dto/user-detail.dto';
 import { UserService } from './user.service';
 
 @ApiTags('user')
 @Controller('user')
+@UseInterceptors(new ResponseInterceptor())
 export class UserController {
   constructor(private userService: UserService) {}
 

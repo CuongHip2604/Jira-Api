@@ -1,22 +1,19 @@
 import {
   Body,
   Controller,
-  Get,
   Post,
-  Req,
-  UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { ResponseInterceptor } from 'interceptors/response.interceptor';
 import { AuthService } from './auth.service';
 import { AuthSignInDto } from './dto/auth-sign-in.dto';
 import { AuthSignUpDto } from './dto/auth-sign-up.dto';
 import { User } from './user.entity';
-import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from './get-user.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserDetailDto } from '../user/dto/user-detail.dto';
 
 @ApiTags('Auth')
+@UseInterceptors(new ResponseInterceptor())
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

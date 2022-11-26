@@ -4,17 +4,20 @@ import { IssuePriority, IssueStatus, IssueType } from 'issue/enum';
 
 export class UpdateIssueDto {
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   title: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   @IsIn([IssueType.STORY, IssueType.TASK])
   type: IssueType;
 
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   @IsIn([
@@ -27,6 +30,7 @@ export class UpdateIssueDto {
   priority: IssuePriority;
 
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   @IsIn([
@@ -42,11 +46,19 @@ export class UpdateIssueDto {
 
   @ApiProperty()
   @IsOptional()
+  @IsOptional()
   @IsString()
   description: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsInt()
   userId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNotEmpty()
+  @IsInt()
+  order: number;
 }
