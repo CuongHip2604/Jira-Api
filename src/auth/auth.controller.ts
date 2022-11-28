@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ResponseInterceptor } from 'interceptors/response.interceptor';
+import { UserDetailDto } from 'user/dto/user-detail.dto';
 import { AuthService } from './auth.service';
 import { AuthSignInDto } from './dto/auth-sign-in.dto';
 import { AuthSignUpDto } from './dto/auth-sign-up.dto';
@@ -19,7 +20,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signup')
-  signUp(@Body(ValidationPipe) authSignUpDto: AuthSignUpDto): Promise<User> {
+  signUp(
+    @Body(ValidationPipe) authSignUpDto: AuthSignUpDto,
+  ): Promise<UserDetailDto> {
     return this.authService.signUp(authSignUpDto);
   }
 

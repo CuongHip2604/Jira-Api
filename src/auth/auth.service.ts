@@ -11,6 +11,7 @@ import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { AuthSignInDto } from './dto/auth-sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserDetailDto } from 'user/dto/user-detail.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +21,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(authSignUpDto: AuthSignUpDto): Promise<User> {
-    const { email, password, name } = authSignUpDto;
+  async signUp(authSignUpDto: AuthSignUpDto): Promise<UserDetailDto> {
+    const { email, password, name, confirmPassword } = authSignUpDto;
+
+    if (password !== confirmPassword) {
+      throw new BadRequestException('Password does not match.');
+    }
 
     const user = new User();
     user.email = email;
@@ -30,7 +35,8 @@ export class AuthService {
     user.name = name;
 
     try {
-      return await this.userRepository.save(user);
+      const res = await this.userRepository.save(user);
+      return new UserDetailDto(res);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('Email already exists');

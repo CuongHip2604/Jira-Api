@@ -21,10 +21,18 @@ export class AuthSignUpDto {
   @IsString()
   @MinLength(6)
   @MaxLength(20)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'Password to weak',
-  })
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].*$/,
+    {
+      message: 'Password to weak',
+    },
+  )
   password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  confirmPassword: string;
 
   @ApiProperty()
   @IsNotEmpty()

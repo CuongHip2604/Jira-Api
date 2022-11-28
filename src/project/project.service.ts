@@ -25,16 +25,6 @@ export class ProjectService {
 
   async getProjects(): Promise<ProjectDetailDto[]> {
     const projects = await this.projectRepository.find({
-      select: [
-        'id',
-        'category',
-        'description',
-        'userProjects',
-        'ownerId',
-        'status',
-        'createdAt',
-        'updatedAt',
-      ],
       where: { isDeleted: false },
       relations: ['userProjects', 'userProjects.user'],
     });
